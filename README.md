@@ -37,14 +37,14 @@ Trafix is designed for ultra-low-latency and high-throughput TCP proxying. It le
 
 ## Key Features
 
-- ** Kernel Zero-Copy Forwarding**: Direct socket-to-pipe-to-socket transfers using Linux `splice(2)` for minimal CPU utilization and sub-millisecond latencies.
-- ** Multi-Core Scalability**: Multi-worker architecture using `SO_REUSEPORT` for kernel-level connection dispatching.
-- ** Intelligent Load Balancing (P2C)**: Power-of-Two-Choices algorithm balances loads effectively and mitigates "herd behavior" across backend clusters.
-- ** Active & Passive Health Monitoring**:
+- **Kernel Zero-Copy Forwarding**: Direct socket-to-pipe-to-socket transfers using Linux `splice(2)` for minimal CPU utilization and sub-millisecond latencies.
+- **Multi-Core Scalability**: Multi-worker architecture using `SO_REUSEPORT` for kernel-level connection dispatching.
+- **Intelligent Load Balancing (P2C)**: Power-of-Two-Choices algorithm balances loads effectively and mitigates "herd behavior" across backend clusters.
+- **Active & Passive Health Monitoring**:
   - Passive instant detection via `EPOLLRDHUP` watch sockets.
   - Active periodic recovery probing driven by Linux `timerfd`.
-- ** Zero-Downtime Hot Reload (`SIGHUP`)**: Dynamically updates routes and backends from `gateway.yaml` at runtime without dropping active in-flight TCP sessions.
-- ** Real-Time Observability & Web Dashboard**:
+- **Zero-Downtime Hot Reload (`SIGHUP`)**: Dynamically updates routes and backends from `gateway.yaml` at runtime without dropping active in-flight TCP sessions.
+- **Real-Time Observability & Web Dashboard**:
   - Per-thread lock-free circular ring buffers (`EventQueue`) with atomic acquire/release semantics.
   - Dedicated `ObservabilityWorker` exposing JSON metrics over a Unix Domain Socket (`/tmp/gateway_admin.sock`).
   - Sleek Node.js/Express web dashboard displaying live topology, throughput, and streaming event logs.
@@ -191,13 +191,15 @@ pkill -HUP gateway
 ### Zero-Copy `splice(2)` Pipeline
 Traditional proxies copy data from kernel space to user space (`read`), then from user space back to kernel space (`write`). Trafix bypasses user space entirely:
 
-$$\text{Client Socket FD} \xrightarrow{\text{splice(2)}} \text{Kernel Pipe Buffer} \xrightarrow{\text{splice(2)}} \text{Backend Socket FD}$$
+```
+[ Client Socket FD ]  ──(splice)──>  [ Kernel Pipe Buffer ]  ──(splice)──>  [ Backend Socket FD ]
+```
 
 ### Power-of-Two-Choices (P2C) Load Balancing
 For every new incoming connection:
 1. Filter the backend pool for instances where `is_healthy == true`.
-2. Randomly select two candidate backends: $B_1$ and $B_2$.
-3. Choose $\operatorname{argmin}(\text{active\_connections}(B_1), \text{active\_connections}(B_2))$.
+2. Randomly select two candidate backends: `B1` and `B2`.
+3. Choose `min(active_connections(B1), active_connections(B2))`.
 4. If connection fails, immediately mark the backend unhealthy, decrement active connections, and failover to remaining healthy candidates.
 
 ---
