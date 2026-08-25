@@ -1,0 +1,29 @@
+name: network-gateway
+services:
+  gateway-dev:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    working_dir: /app
+    stdin_open: true
+    tty: true
+
+  dashboard-dev:
+    build:
+      context: .
+      target: dashboard-dev
+    volumes:
+      - ./dashboard:/app/dashboard
+      - dashboard-node-modules:/app/dashboard/node_modules
+      - /tmp:/tmp
+    working_dir: /app/dashboard
+    command: npm start
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+
+volumes:
+  dashboard-node-modules:

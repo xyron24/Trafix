@@ -1,0 +1,7 @@
+build/
+.git/
+*.o
+*.d
+.vscode/
+.idea/
+dashboard/node_modules/

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gateway Observability</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header glass">
+            <div class="logo">
+                <div class="pulse-dot"></div>
+                <h1>Gateway Observability</h1>
+            </div>
+            <div class="header-metrics">
+                <div class="global-metric">
+                    <span class="label">Total Conns</span>
+                    <span class="val" id="global-total-conns">0</span>
+                </div>
+                <div class="global-metric">
+                    <span class="label">Active Conns</span>
+                    <span class="val highlight" id="global-active-conns">0</span>
+                </div>
+                <div class="global-metric">
+                    <span class="label">In (C2B)</span>
+                    <span class="val" id="global-bytes-c2b">0 B</span>
+                </div>
+                <div class="global-metric">
+                    <span class="label">Out (B2C)</span>
+                    <span class="val" id="global-bytes-b2c">0 B</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="topology-section">
+                <div class="section-header">
+                    <h2>Topology & Health</h2>
+                    <button id="add-service-btn" class="icon-btn add-btn" title="Add Service">+</button>
+                </div>
+                <div class="services-grid" id="services-grid">
+                    <!-- Services will be injected here -->
+                </div>
+            </section>
+
+            <section class="events-section glass">
+                <h2>Live Event Feed</h2>
+                <div class="terminal" id="terminal-feed">
+                    <!-- Events injected here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Template for a service card -->
+    <template id="service-template">
+        <div class="service-card glass">
+            <div class="service-header">
+                <h3 class="service-name"></h3>
+                <span class="service-port"></span>
+            </div>
+            <div class="backends-list"></div>
+        </div>
+    </template>
+
+    <template id="backend-template">
+        <div class="backend-item">
+            <div class="backend-status-indicator"></div>
+            <div class="backend-info">
+                <span class="backend-host"></span>
+                <div class="backend-stats">
+                    <span class="backend-conns"></span>
+                </div>
+            </div>
+            <div class="backend-actions">
+                <button class="icon-btn backend-action-btn" title="Action"></button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Add Service Modal -->
+    <div class="modal-overlay" id="add-service-modal">
+        <div class="modal glass">
+            <div class="modal-header">
+                <h3>Add New Service</h3>
+            </div>
+            <form id="add-service-form">
+                <div class="form-group">
+                    <label for="service-name">Service Name</label>
+                    <input type="text" id="service-name" required placeholder="e.g. auth-service">
+                </div>
+                <div class="form-group">
+                    <label for="listen-port">Listen Port</label>
+                    <input type="number" id="listen-port" required placeholder="e.g. 8080">
+                </div>
+                <div class="form-group">
+                    <label for="backend-host">Backend Host</label>
+                    <input type="text" id="backend-host" required placeholder="e.g. 127.0.0.1">
+                </div>
+                <div class="form-group">
+                    <label for="backend-port">Backend Port</label>
+                    <input type="number" id="backend-port" required placeholder="e.g. 3001">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn cancel-btn" id="close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
