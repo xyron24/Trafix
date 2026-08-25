@@ -1,16 +1,16 @@
-# ⚡ Trafix
+# Trafix
 
 > **High-Performance Asynchronous Layer 4 (L4) TCP Reverse Proxy & Gateway** built in **C++17** with Zero-Copy Linux Kernel Forwarding, Intelligent Load Balancing, Active Health Checking, and Real-Time Observability.
 
 ---
 
-## 📌 Architecture Overview
+## Architecture Overview
 
 Trafix is designed for ultra-low-latency and high-throughput TCP proxying. It leverages modern Linux kernel networking primitives (`epoll`, `SO_REUSEPORT`, `splice`, `pipe2`, `timerfd`) to distribute incoming TCP streams across worker threads and stream data directly through kernel buffers without copying bytes to user-space memory.
 
 ![Trafix System Architecture](assets/architecture.png)
 
-### 🧱 Architectural Layers
+### Architectural Layers
 
 1. **Client Tier**:
    - External TCP clients establish connections to configured service listening ports (e.g., `:8081`, `:8443`).
@@ -35,23 +35,23 @@ Trafix is designed for ultra-low-latency and high-throughput TCP proxying. It le
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- **🚀 Kernel Zero-Copy Forwarding**: Direct socket-to-pipe-to-socket transfers using Linux `splice(2)` for minimal CPU utilization and sub-millisecond latencies.
-- **⚡ Multi-Core Scalability**: Multi-worker architecture using `SO_REUSEPORT` for kernel-level connection dispatching.
-- **⚖️ Intelligent Load Balancing (P2C)**: Power-of-Two-Choices algorithm balances loads effectively and mitigates "herd behavior" across backend clusters.
-- **🩺 Active & Passive Health Monitoring**:
+- ** Kernel Zero-Copy Forwarding**: Direct socket-to-pipe-to-socket transfers using Linux `splice(2)` for minimal CPU utilization and sub-millisecond latencies.
+- ** Multi-Core Scalability**: Multi-worker architecture using `SO_REUSEPORT` for kernel-level connection dispatching.
+- ** Intelligent Load Balancing (P2C)**: Power-of-Two-Choices algorithm balances loads effectively and mitigates "herd behavior" across backend clusters.
+- ** Active & Passive Health Monitoring**:
   - Passive instant detection via `EPOLLRDHUP` watch sockets.
   - Active periodic recovery probing driven by Linux `timerfd`.
-- **🔄 Zero-Downtime Hot Reload (`SIGHUP`)**: Dynamically updates routes and backends from `gateway.yaml` at runtime without dropping active in-flight TCP sessions.
-- **📊 Real-Time Observability & Web Dashboard**:
+- ** Zero-Downtime Hot Reload (`SIGHUP`)**: Dynamically updates routes and backends from `gateway.yaml` at runtime without dropping active in-flight TCP sessions.
+- ** Real-Time Observability & Web Dashboard**:
   - Per-thread lock-free circular ring buffers (`EventQueue`) with atomic acquire/release semantics.
   - Dedicated `ObservabilityWorker` exposing JSON metrics over a Unix Domain Socket (`/tmp/gateway_admin.sock`).
   - Sleek Node.js/Express web dashboard displaying live topology, throughput, and streaming event logs.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 BFCTCB/
@@ -99,7 +99,7 @@ BFCTCB/
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -148,7 +148,7 @@ docker compose up --build
 
 ---
 
-## ⚙️ Configuration (`gateway.yaml`)
+## Configuration (`gateway.yaml`)
 
 Define incoming listener ports and upstream backend pools in `config/gateway.yaml`:
 
@@ -186,7 +186,7 @@ pkill -HUP gateway
 
 ---
 
-## 🔬 Core Technical Details
+## Core Technical Details
 
 ### Zero-Copy `splice(2)` Pipeline
 Traditional proxies copy data from kernel space to user space (`read`), then from user space back to kernel space (`write`). Trafix bypasses user space entirely:
@@ -202,6 +202,6 @@ For every new incoming connection:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
